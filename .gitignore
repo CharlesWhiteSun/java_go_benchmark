@@ -1,0 +1,7 @@
+# dir
+charts
+log
+venv
+
+# file
+*.log

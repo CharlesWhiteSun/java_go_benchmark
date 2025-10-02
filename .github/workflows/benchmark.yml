@@ -1,0 +1,30 @@
+name: Benchmark APIs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build containers
+        run: docker-compose build
+
+      - name: Run containers
+        run: docker-compose up -d
+
+      - name: Install wrk
+        run: sudo apt-get update && sudo apt-get install -y wrk
+
+      - name: Benchmark Spring Boot
+        run: wrk -t4 -c200 -d15s http://localhost:8081/ping -s wrk/benchmark.lua
+
+      - name: Benchmark Quarkus
+        run: wrk -t4 -c200 -d15s http://localhost:8082/ping -s wrk/benchmark.lua
+
+      - name: Benchmark Gin
+        run: wrk -t4 -c200 -d15s http://localhost:8083/ping -s wrk/benchmark.lua
