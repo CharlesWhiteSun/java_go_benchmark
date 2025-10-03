@@ -2,29 +2,56 @@ name: Benchmark APIs
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ "main" ]
+    inputs:
+      mode:
+        description: 'Benchmark mode'
+        required: false
+        default: 'baseline'
+        type: string
 
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build containers
-        run: docker-compose build
+        run: docker compose build
 
       - name: Run containers
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Install wrk
         run: sudo apt-get update && sudo apt-get install -y wrk
 
-      - name: Benchmark Spring Boot
-        run: wrk -t4 -c200 -d15s http://localhost:8081/ping -s wrk/benchmark.lua
+      - name: Run benchmarks
+        run: |
+          case "${{ github.event.inputs.mode }}" in
+            baseline)
+              THREADS=4; CONNECTIONS=200; DURATION=300s ;;
+            normal)
+              THREADS=8; CONNECTIONS=1000; DURATION=900s ;;
+            stress)
+              THREADS=8; CONNECTIONS=2500; DURATION=1800s ;;
+            extreme)
+              THREADS=8; CONNECTIONS=5000; DURATION=3600s ;;
+            *)
+              echo "Unknown mode '${{ github.event.inputs.mode }}'. Using baseline mode."
+              THREADS=4; CONNECTIONS=200; DURATION=300s ;;
+          esac
 
-      - name: Benchmark Quarkus
-        run: wrk -t4 -c200 -d15s http://localhost:8082/ping -s wrk/benchmark.lua
+          echo "Mode: ${{ github.event.inputs.mode }}"
+          echo "Threads: $THREADS"
+          echo "Connections: $CONNECTIONS"
+          echo "Duration: $DURATION"
 
-      - name: Benchmark Gin
-        run: wrk -t4 -c200 -d15s http://localhost:8083/ping -s wrk/benchmark.lua
+          wrk -t$THREADS -c$CONNECTIONS -d$DURATION http://localhost:8081/ping -s wrk/benchmark.lua
+          wrk -t$THREADS -c$CONNECTIONS -d$DURATION http://localhost:8082/ping -s wrk/benchmark.lua
+          wrk -t$THREADS -c$CONNECTIONS -d$DURATION http://localhost:8083/ping -s wrk/benchmark.lua
+
+      - name: Tear down containers
+        run: docker compose down
