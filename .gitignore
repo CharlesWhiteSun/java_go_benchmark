@@ -1,7 +1,10 @@
 # dir
-charts
-log
+*charts
+*log
+*report
 venv
+
+!charts/
 
 # file
 *.log
