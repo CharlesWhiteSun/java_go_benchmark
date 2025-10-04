@@ -1,7 +1,11 @@
+# IDE
+.vscode
+
 # dir
 *charts
 *log
 *report
+.venv
 venv
 
 !charts/

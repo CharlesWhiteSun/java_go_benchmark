@@ -69,12 +69,12 @@ Use the following command to run load tests with different configurations:
 
     Modes and their parameters:
     
-    Mode     | Threads | Connections | Duration
-    ---------|---------|-------------|---------
-    baseline | 4       | 200         | 300s
-    normal   | 8       | 1000        | 900s
-    stress   | 8       | 2500        | 1800s
-    extreme  | 8       | 5000        | 3600s
+    | Mode     | Threads | Connections | Duration |
+    | -------- | ------- | ----------- | -------- |
+    | baseline | 4       | 200         | 300s     |
+    | normal   | 8       | 1000        | 900s     |
+    | stress   | 8       | 2500        | 1800s    |
+    | extreme  | 8       | 5000        | 3600s    |
 
 8) Install Python dependencies:
 Install required Python libraries (e.g., matplotlib, pandas)
@@ -91,7 +91,19 @@ This step visualizes Requests/sec, Avg Latency, and Efficiency.
     ```
 
 
-<!-- ## 📊 Benchmark Report & Charts
+## 📄 Report
+
+The benchmark analysis generates a detailed HTML report located at:
+`benchmark_report/report.html`
+
+This report includes:
+- Summary table of all benchmarks
+- Requests/sec comparison chart
+- Average latency comparison chart
+- Performance efficiency chart
+
+
+## 📊 Benchmark Report & Charts
 
 After running the benchmark and analysis, a detailed HTML report is generated along with charts stored in the `benchmark_charts/` directory.
 
@@ -103,20 +115,7 @@ You can preview these charts directly from this repository:
 
 ![Average Latency Comparison](charts/Average_Latency_Comparison.png)
 
-![Performance Efficiency](charts/Performance_Efficiency.png) -->
-
-
-## 📄 HTML Report
-
-The benchmark analysis generates a detailed HTML report located at:
-`benchmark_report/report.html`
-
-This report includes:
-- Summary table of all benchmarks
-- Requests/sec comparison chart
-- Average latency comparison chart
-- Performance efficiency chart
-- Formula explanations
+![Performance Efficiency](charts/Performance_Efficiency.png)
 
 
 ## 📜 License

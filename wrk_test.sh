@@ -5,6 +5,33 @@
 # 可透過參數指定執行時間 (-d)
 # ================================
 
+# Benchmark 名稱與對應 URL 陣列
+BENCHMARKS=(
+  "Golang Gin|http://localhost:8083/ping"
+  "Java Spring Boot|http://localhost:8081/ping"
+  "Java Quarkus|http://localhost:8082/ping"
+)
+
+# 先檢查所有服務是否可連線
+echo ""
+echo "=== Checking service availability ==="
+for entry in "${BENCHMARKS[@]}"; do
+    name="${entry%%|*}"
+    url="${entry##*|}"
+
+    # 用 curl 測試是否能連線成功
+    status_code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url")
+
+    if [ "$status_code" != "200" ]; then
+        echo " - $name ($url) is not available (status: $status_code)"
+        echo " - Please make sure the service is started (for example, Docker Desktop is open) before performing stress testing."
+        exit 1
+    else
+        echo " - $name ($url) is available (status: $status_code)"
+    fi
+done
+echo ""
+
 MODE=${1:-baseline}   # 預設 baseline
 
 case "$MODE" in
@@ -35,7 +62,6 @@ case "$MODE" in
     ;;
 esac
 
-echo ""
 echo "=== All benchmarks start === $(date +"%Y-%m-%d %H:%M:%S")"
 echo "Perform stress testing according to the following settings:"
 printf " - mode: $MODE"
@@ -44,12 +70,6 @@ printf "\n - connections: $CONNECTIONS"
 printf "\n - duration: $DURATION"
 echo ""
 echo ""
-
-BENCHMARKS=(                # Benchmark 名稱與對應 URL 陣列
-    "Golang Gin|http://localhost:8083/ping"
-    "Java Spring Boot|http://localhost:8081/ping"
-    "Java Quarkus|http://localhost:8082/ping"
-)
 
 LOG_DIR="./benchmark_log"
 mkdir -p "$LOG_DIR"
@@ -120,3 +140,4 @@ for entry in "${BENCHMARKS[@]}"; do
 done
 
 echo "=== All benchmarks completed === $(date +"%Y-%m-%d %H:%M:%S")" | tee -a "$OUTPUT_LOG"
+echo ""

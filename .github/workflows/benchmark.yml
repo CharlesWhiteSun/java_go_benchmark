@@ -19,30 +19,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build containers
-        run: docker compose build
-
-      - name: Run containers
-        run: docker compose up -d
-
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y wrk python3 python3-pip
+          sudo apt-get install -y docker-compose wrk python3 python3-pip
           pip3 install -r requirements.txt
 
-      - name: Run benchmark script
+      - name: Run benchmark via Makefile
         run: |
-          echo "Running benchmark for mode: ${{ github.event.inputs.mode }}"
-          sudo bash ./wrk_test.sh ${{ github.event.inputs.mode }}
+          make MODE=${{ github.event.inputs.mode }}
 
-      - name: Generate benchmark report
-        run: python3 ./wrk_analysis.py
+      - name: Zip benchmark results
+        run: |
+          zip -r benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}.zip \
+            benchmark_log benchmark_charts benchmark_report
 
-      - name: Upload benchmark report and charts
-        uses: actions/upload-artifact@v3
+      - name: Upload benchmark zip
+        uses: actions/upload-artifact@v4
         with:
-          name: benchmark-report
-          path: |
-            ./benchmark_report
-            ./benchmark_charts
+          name: benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}
+          path: benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}.zip
+          retention-days: 7
+

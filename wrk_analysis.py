@@ -72,8 +72,8 @@ def save_barplot(df, title, filename, order=None):
     plt.ylabel("- Requests/sec -")
     plt.xlabel("- Framework Benchmark -")
     plt.xticks(rotation=0, ha="center")
-    if ax.get_legend():
-        ax.get_legend().remove()
+    if (legend := ax.get_legend()) is not None:
+        legend.remove()
     plt.tight_layout()
     plt.savefig(os.path.join(CHART_DIR, filename))
     plt.close()
@@ -92,8 +92,8 @@ def save_latency_comparison(df, filename, order=None):
     plt.ylabel("- Avg Latency(ms) -")
     plt.xlabel("- Framework Benchmark -")
     plt.xticks(rotation=0, ha="center")
-    if ax.get_legend():
-        ax.get_legend().remove()
+    if (legend := ax.get_legend()) is not None:
+        legend.remove()
     plt.tight_layout()
     plt.savefig(os.path.join(CHART_DIR, filename))
     plt.close()
@@ -115,8 +115,8 @@ def save_efficiency_chart(df, filename, order=None):
     plt.ylabel("- Efficiency -")
     plt.xlabel("- Framework Benchmark -")
     plt.xticks(rotation=0, ha="center")
-    if ax.get_legend():
-        ax.get_legend().remove()
+    if (legend := ax.get_legend()) is not None:
+        legend.remove()
     plt.tight_layout()
     plt.savefig(os.path.join(CHART_DIR, filename))
     plt.close()
@@ -180,7 +180,7 @@ def generate_html_report(df, chart_files, order=None, exec_times=None, wrk_confi
         "Requests/sec": pivot_df.get("Requests/sec", pd.NA)
     })
 
-    pivot_html = summary_df.to_html(index=False, float_format="%.2f")
+    pivot_html = summary_df.to_html(index=False, float_format=lambda x: f"{x:.2f}")
 
     summary_description = """
         <ul style="text-align:left; display:inline-block;">
@@ -206,7 +206,7 @@ def generate_html_report(df, chart_files, order=None, exec_times=None, wrk_confi
                 th, td {{ border: 1px solid #ccc; padding: 8px; text-align: center; }}
                 th {{ background-color: #f4f4f4; }}
             </style>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js" async></script>
+            <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
         </head>
         <body>
             <h1>Benchmark Report</h1>
