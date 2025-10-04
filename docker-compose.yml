@@ -1,15 +1,63 @@
+networks:
+  benchmark_net:
+    driver: bridge
+
 services:
   springboot:
+    container_name: springboot
     build: ./springboot
     ports:
       - "8081:8080"
+    networks:
+      - benchmark_net
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/ping || exit 1" ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
 
   quarkus:
+    container_name: quarkus
     build: ./quarkus
     ports:
       - "8082:8080"
+    networks:
+      - benchmark_net
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/ping || exit 1" ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
 
   gin:
+    container_name: gin
     build: ./gin
     ports:
       - "8083:8080"
+    networks:
+      - benchmark_net
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/ping || exit 1" ]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 15s
+
+  wrk:
+    build: ./wrk
+    container_name: wrk
+    depends_on:
+      springboot:
+        condition: service_healthy
+      gin:
+        condition: service_healthy
+      quarkus:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    working_dir: /app
+    networks:
+      - benchmark_net
+    entrypoint: [ "tail", "-f", "/dev/null" ]
