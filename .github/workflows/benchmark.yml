@@ -4,9 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Benchmark mode (baseline|normal|stress|extreme)'
-        required: false
+        description: 'Benchmark mode'
+        required: true
         default: 'baseline'
+        type: choice
+        options:
+          - short
+          - baseline
+          - normal
+          - stress
+          - extreme
 
 jobs:
   benchmark:
