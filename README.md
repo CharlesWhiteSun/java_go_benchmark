@@ -116,7 +116,7 @@ This section explains step-by-step how to prepare, build, run and analyze the be
     ```
 
 
-## 📄 **Report**
+## 📄 **Benchmark Report**
 
 The benchmark analysis generates a detailed HTML report located at:
 `benchmark_report/report.html`
@@ -130,7 +130,7 @@ This report includes:
 - Performance efficiency chart
 
 
-## 📊 **Benchmark Report & Charts**
+## 📊 **Benchmark Charts**
 
 The report contains independent charts, which can also be obtained directly from the directory `benchmark_charts/`:
 

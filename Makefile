@@ -1,8 +1,7 @@
 .PHONY: all setup benchmark report
 
-MODE ?= baseline
+MODE ?= short
 VENV := .venv
-PYTHON := $(VENV)/bin/python
 PIP := $(VENV)/bin/pip
 
 all: setup benchmark report
@@ -13,6 +12,11 @@ setup:
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 
+	@echo "🗂 Creating required benchmark directories..."
+	mkdir -p benchmark_log benchmark_charts benchmark_report
+	touch wrk_test.sh wrk_analysis.py
+	chmod +x wrk_test.sh
+
 benchmark:
 	@echo "🐳 Building and starting containers..."
 	docker compose up -d --build --force-recreate
@@ -20,4 +24,4 @@ benchmark:
 
 report:
 	@echo "📄 Generating benchmark report..."
-	$(PYTHON) ./wrk_analysis.py
+	docker exec wrk python3 /app/wrk_analysis.py

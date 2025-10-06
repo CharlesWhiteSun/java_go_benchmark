@@ -56,7 +56,12 @@ services:
       quarkus:
         condition: service_healthy
     volumes:
-      - .:/app
+      - ./benchmark_log:/app/benchmark_log
+      - ./benchmark_charts:/app/benchmark_charts
+      - ./benchmark_report:/app/benchmark_report
+      - ./wrk_test.sh:/app/wrk_test.sh
+      - ./wrk_analysis.py:/app/wrk_analysis.py
+      - ./wrk:/app/wrk
     working_dir: /app
     networks:
       - benchmark_net
