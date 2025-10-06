@@ -24,13 +24,13 @@ this project provides a pre-configured GitHub Actions workflow that allows you t
 
 Modes and their parameters:
     
-| Mode         | Threads | Connections | Duration |
-| ------------ | ------- | ----------- | -------- |
-| **short**    | 2       | 100         | 15s      |
-| **baseline** | 4       | 200         | 300s     |
-| normal       | 8       | 1000        | 900s     |
-| stress       | 8       | 2500        | 1800s    |
-| extreme      | 8       | 5000        | 3600s    |
+| Mode          | Threads | Connections | Duration |
+| ------------- | ------- | ----------- | -------- |
+| ***short**    | 2       | 100         | 15s      |
+| ***baseline** | 4       | 200         | 300s     |
+| normal        | 8       | 1000        | 900s     |
+| stress        | 8       | 2500        | 1800s    |
+| extreme       | 8       | 5000        | 3600s    |
 
 **Notice:**
 
@@ -121,7 +121,7 @@ This section explains step-by-step how to prepare, build, run and analyze the be
 The benchmark analysis generates a detailed HTML report located at:
 `benchmark_report/report.html`
 
-![Summary Table](charts/summary.png)
+![Summary Table](charts/Summary.png)
 
 This report includes:
 - Summary table of all benchmarks
