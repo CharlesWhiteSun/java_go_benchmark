@@ -35,9 +35,11 @@ jobs:
 
       - name: Zip benchmark results
         run: |
-          zip -r benchmark-${{ github.event.inputs.mode }}.zip \
-            benchmark_log benchmark_charts benchmark_report || \
-            echo "⚠️ Warning: Some folders may be missing."
+          mkdir -p artifacts
+          cp -r benchmark_log benchmark_charts benchmark_report artifacts/ 2>/dev/null || echo "⚠️ Some folders missing."
+          cd artifacts
+          zip -r ../benchmark-${{ github.event.inputs.mode }}.zip ./*
+          cd ..
 
       - name: Upload benchmark zip
         uses: actions/upload-artifact@v4
