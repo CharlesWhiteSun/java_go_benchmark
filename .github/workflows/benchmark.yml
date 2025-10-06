@@ -26,24 +26,21 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose wrk python3 python3-pip zip
+          sudo apt-get install -y docker-compose wrk python3 python3-pip
           pip3 install -r requirements.txt
 
       - name: Run benchmark via Makefile
         run: |
           make MODE=${{ github.event.inputs.mode }}
 
-      - name: Zip benchmark results
+      - name: Prepare artifact folder
         run: |
           mkdir -p artifacts
-          cp -r benchmark_log benchmark_charts benchmark_report artifacts/ 2>/dev/null || echo "⚠️ Some folders missing."
-          cd artifacts
-          zip -r ../benchmark-${{ github.event.inputs.mode }}.zip ./*
-          cd ..
+          cp -r benchmark_log benchmark_charts benchmark_report artifacts/ 2>/dev/null
 
-      - name: Upload benchmark zip
+      - name: Upload benchmark results
         uses: actions/upload-artifact@v4
         with:
           name: benchmark-${{ github.event.inputs.mode }}
-          path: benchmark-${{ github.event.inputs.mode }}.zip
+          path: artifacts/
           retention-days: 7
