@@ -18,9 +18,6 @@ on:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [springboot, quarkus, gin]
 
     steps:
       - name: Checkout repository
@@ -29,7 +26,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y docker-compose wrk python3 python3-pip
+          sudo apt-get install -y docker-compose wrk python3 python3-pip zip
           pip3 install -r requirements.txt
 
       - name: Run benchmark via Makefile
@@ -38,13 +35,13 @@ jobs:
 
       - name: Zip benchmark results
         run: |
-          zip -r benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}.zip \
-            benchmark_log benchmark_charts benchmark_report
+          zip -r benchmark-${{ github.event.inputs.mode }}.zip \
+            benchmark_log benchmark_charts benchmark_report || \
+            echo "⚠️ Warning: Some folders may be missing."
 
       - name: Upload benchmark zip
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}
-          path: benchmark-${{ matrix.service }}-${{ github.event.inputs.mode }}.zip
+          name: benchmark-${{ github.event.inputs.mode }}
+          path: benchmark-${{ github.event.inputs.mode }}.zip
           retention-days: 7
-

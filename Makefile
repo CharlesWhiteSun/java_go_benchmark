@@ -1,4 +1,4 @@
-.PHONY: all setup run benchmark report clean
+.PHONY: all setup benchmark report
 
 MODE ?= baseline
 VENV := .venv
@@ -21,8 +21,3 @@ benchmark:
 report:
 	@echo "📄 Generating benchmark report..."
 	$(PYTHON) ./wrk_analysis.py
-
-clean:
-	@echo "🧹 Cleaning up..."
-	docker compose down
-	rm -rf benchmark_report benchmark_charts benchmark_log $(VENV)
